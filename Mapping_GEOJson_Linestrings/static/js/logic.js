@@ -1,8 +1,8 @@
 // Add console.log to check to see if our code is working.
 console.log("working");
 
-// // Create the map object with center and zoom level for Toronto.
-let map = L.map('mapid').setView([44.0, -80], 2);
+// // Create the map object with center and zoom level.
+//let map = L.map('mapid').setView([44.0, -80], 2);
 
 // We create the tile layer that will be the background of our map.
 let light = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/{z}/{x}/{y}?access_token={accessToken}', {
@@ -26,7 +26,7 @@ let baseMaps = {
 
 // Create the map object with center, zoom level and default layer.
 let map = L.map('mapid', {
-  center: [30, 30],
+  center: [44, -80],
   zoom: 2,
   layers: [light]
 })
@@ -43,12 +43,41 @@ let torontoData = "https://raw.githubusercontent.com/madihajaved/Mapping_Earthqu
 // // Accessing the airport GeoJSON URL
 // let airportData = "https://raw.githubusercontent.com/madihajaved/Mapping_Earthquakes/main/majorAirports.json";
 
+// Create a style for the lines.
+let myStyle = {
+  color: "#ffffa1",
+  weight: 2
+}
+
 // Grabbing our GeoJSON data.
-d3.json(airportData).then(function(data) {
+d3.json(torontoData).then(function(data) {
   console.log(data);
 // Creating a GeoJSON layer with the retrieved data.
-  L.geoJson(data).addTo(map);
+  L.geoJson(data, {
+    style: myStyle,
+    onEachFeature: function (feature, layer) {
+      layer.bindPopup("<h3> Airline: " + feature.properties.airline + "</h3> <hr><h3> Destination: "
+      + feature.properties.dst + "</h3>");
+    }
+  })
+  .addTo(map);
 });
+
+
+// // Grabbing our GeoJSON data.
+// d3.json(torontoData).then(function(data) {
+//   console.log(data);
+// // Creating a GeoJSON layer with the retrieved data.
+//   L.geoJson(data, {
+//     color: "#ffffa1",
+//     weight: 2, 
+//     onEachFeature: function (feature, layer) {
+//       layer.bindPopup("<h3> Airline: " + feature.properties.airline + "</h3> <hr><h3> Destination: "
+//       + feature.properties.dst + "</h3>");
+//     }
+//   })
+//   .addTo(map);
+// });
 
 
 // // Create the map object with center at the San Francisco airport.
